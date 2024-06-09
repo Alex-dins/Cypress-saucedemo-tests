@@ -1,8 +1,8 @@
-import LoginPage from "../support/pageObjects/loginPage";
+import LoginPage from "../support/pageObjects/LoginPage";
 import HomePage from "../support/pageObjects/HomePage";
 import { Endpoints } from "../support/helper/EndpointsMap";
 import { FakeData } from "../support/helper/FakeData";
-import TextContent from "../fixtures/textContent.json";
+import alerts from "../fixtures/alerts.json";
 
 describe("Testing login page", () => {
   let loginPage;
@@ -20,12 +20,19 @@ describe("Testing login page", () => {
     cy.checkUrlIncludes(Endpoints.inventory);
   });
 
-  it.only("Unsuccessful login with incorrect credentials", () => {
+  it("Unsuccessful login with incorrect credentials", () => {
     loginPage.login(FakeData.username, FakeData.password);
 
     loginPage
       .errorMessage()
       .should("be.visible")
-      .and("have.text", TextContent.LOGIN_ERROR_MESSAGE);
+      .and("have.text", alerts.LOGIN_ERROR_MESSAGE);
+  });
+
+  it("Login and logout", () => {
+    loginPage.login(Cypress.env("username"), Cypress.env("password"));
+    homePage.logout();
+
+    cy.checkUrlIncludes("/");
   });
 });
